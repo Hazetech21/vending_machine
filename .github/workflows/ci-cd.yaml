@@ -1,105 +1,105 @@
-name: CI/CD Pipeline
+# name: CI/CD Pipeline
 
-on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - 'README.md'
+# on:
+#   push:
+#     branches:
+#       - main
+#     paths-ignore:
+#       - 'README.md'
 
-env:
-  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/vending-machine-api
-  DATABASE_URL: ${{ secrets.DATABASE_URL }}
-  SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+# env:
+#   IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/vending-machine-api
+#   DATABASE_URL: ${{ secrets.DATABASE_URL }}
+#   SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
     
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_DB: test_vending_db
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+#     services:
+#       postgres:
+#         image: postgres:15
+#         env:
+#           POSTGRES_DB: test_vending_db
+#           POSTGRES_USER: postgres
+#           POSTGRES_PASSWORD: postgres
+#         ports:
+#           - 5432:5432
+#         options: >-
+#           --health-cmd pg_isready
+#           --health-interval 10s
+#           --health-timeout 5s
+#           --health-retries 5
     
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
+#       - name: Set up Python
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: '3.11'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+#       - name: Install dependencies
+#         run: |
+#           python -m pip install --upgrade pip
+#           pip install -r requirements.txt
 
-      - name: Run tests
-        env:
-          DB_NAME: test_vending_db
-          DB_USER: postgres
-          DB_PASSWORD: postgres
-          DB_HOST: localhost
-          DB_PORT: 5432
-          SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-          DEBUG: False
-        run: |
-          python manage.py test --verbosity=2
+#       - name: Run tests
+#         env:
+#           DB_NAME: test_vending_db
+#           DB_USER: postgres
+#           DB_PASSWORD: postgres
+#           DB_HOST: localhost
+#           DB_PORT: 5432
+#           SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+#           DEBUG: False
+#         run: |
+#           python manage.py test --verbosity=2
 
-  build-and-push:
-    runs-on: ubuntu-latest
-    needs: test
-    env:
-      IMAGE_TAG: prod-${{ github.run_number }}
+#   build-and-push:
+#     runs-on: ubuntu-latest
+#     needs: test
+#     env:
+#       IMAGE_TAG: prod-${{ github.run_number }}
     
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+#       - name: Log in to Docker Hub
+#         uses: docker/login-action@v3
+#         with:
+#           username: ${{ secrets.DOCKERHUB_USERNAME }}
+#           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and Push Docker image
-        uses: docker/build-push-action@v4
-        with:
-          push: true
-          tags: |
-            ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-            ${{ env.IMAGE_NAME }}:latest
-          build-args: |
-            DATABASE_URL=${{ env.DATABASE_URL }}
-            SECRET_KEY=${{ env.SECRET_KEY }}
+#       - name: Build and Push Docker image
+#         uses: docker/build-push-action@v4
+#         with:
+#           push: true
+#           tags: |
+#             ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+#             ${{ env.IMAGE_NAME }}:latest
+#           build-args: |
+#             DATABASE_URL=${{ env.DATABASE_URL }}
+#             SECRET_KEY=${{ env.SECRET_KEY }}
 
-      # - name: Clone ArgoCD repository
-      #   uses: actions/checkout@v3
-      #   with:
-      #     repository: NineTalents-Agency/argocd
-      #     token: ${{ secrets.CHECKOUT_TOKEN }}
-      #     path: vending-machine
+#       # - name: Clone ArgoCD repository
+#       #   uses: actions/checkout@v3
+#       #   with:
+#       #     repository: NineTalents-Agency/argocd
+#       #     token: ${{ secrets.CHECKOUT_TOKEN }}
+#       #     path: vending-machine
 
-      # - name: Update ArgoCD deployment files
-      #   run: |
-      #     sed -i "s|image: .*$|image: $IMAGE_NAME:$IMAGE_TAG|g" vending-machine/vending-machine/deployment.yml
+#       # - name: Update ArgoCD deployment files
+#       #   run: |
+#       #     sed -i "s|image: .*$|image: $IMAGE_NAME:$IMAGE_TAG|g" vending-machine/vending-machine/deployment.yml
           
-      # - name: Commit and push changes to ArgoCD repo
-      #   run: |
-      #     cd vending-machine
-      #     git config --global user.email "admin@vendingmachine.com"
-      #     git config --global user.name "vending-bot"
-      #     git add vending-machine/deployment.yml
-      #     git commit -m "Update image tag to $IMAGE_TAG"
-      #     git push
+#       # - name: Commit and push changes to ArgoCD repo
+#       #   run: |
+#       #     cd vending-machine
+#       #     git config --global user.email "admin@vendingmachine.com"
+#       #     git config --global user.name "vending-bot"
+#       #     git add vending-machine/deployment.yml
+#       #     git commit -m "Update image tag to $IMAGE_TAG"
+#       #     git push
