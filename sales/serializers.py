@@ -5,6 +5,7 @@ from .models import User, Product
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, validators=[validate_password])
+
     
     class Meta:
         model = User
@@ -18,7 +19,6 @@ class UserSerializer(serializers.ModelSerializer):
             role=validated_data['role'],
         )
         return user
-
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()

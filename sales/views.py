@@ -167,8 +167,8 @@ def deposit(request):
     user = request.user
     
     new_deposit = user.deposit + coin
-    if new_deposit > 10000:
-        return Response({'error': 'Maximum deposit limit is 10000 cents'}, status=status.HTTP_400_BAD_REQUEST)
+    if new_deposit > 100:
+        return Response({'error': 'Maximum deposit limit is 100 cents'}, status=status.HTTP_400_BAD_REQUEST)
     
     user.deposit = new_deposit
     user.save()
@@ -250,16 +250,3 @@ def calculate_change(amount):
     
     return change_breakdown
 
-
-#       product.amount_available -= amount
-#             product.save()
-            
-#             change = user.deposit - total_cost
-#             user.deposit = 0
-#             user.save()        
-#             return Response({
-#                 'total_spent': total_cost,
-#                 'product_purchased': product.product_name,
-#                 'amount_purchased': amount,
-#                 'change': change
-#             }, status=status.HTTP_200_OK)
