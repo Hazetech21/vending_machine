@@ -2,6 +2,7 @@
 import os
 from pathlib import Path
 from decouple import config
+import dj_database_url
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -70,14 +71,20 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default='postgresql://username:password@hostname:5432/DB_NAME',
+#         conn_max_age=600
+#     )
+# }
 
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': config('DB_NAME', default='vending_machine_db'),
-#         'USER': config('DB_USER', default='dbmasteruser'),
-#         'PASSWORD': config('DB_PASSWORD', default='NdiliaTalentsTech2025'),
-#         'HOST': config('DB_HOST', default='ls-8c84b8e5b3f091fc7248fc8371e939aa538bf434.cbumy88kitld.eu-west-3.rds.amazonaws.com'),
+#         'NAME': config('DB_NAME',),
+#         'USER': config('DB_USER',),
+#         'PASSWORD': config('DB_PASSWORD',),
+#         'HOST': config('DB_HOST', ),
 #         'PORT': config('DB_PORT', default='5432'),
 #     }
 # }

@@ -15,7 +15,7 @@ A Django REST Framework API that simulates a vending machine system with role-ba
 ## Tech Stack
 
 - Python 3.11
-- Django 4.2
+- Django 5.2
 - Django REST Framework 3.14
 - PostgreSQL 15
 - JWT Authentication
@@ -55,7 +55,7 @@ createdb vending_machine_db
 
 5. **Configure environment variables**
 ```bash
-cp .env.example .env
+cp .env
 # Edit .env with your database credentials
 ```
 
@@ -74,13 +74,31 @@ python manage.py createsuperuser
 ```bash
 python manage.py test
 ```
+9. **Run Coverage Test**
 
-9. **Start development server**
+```bash
+# Run tests with coverage
+coverage run --source='.' manage.py test
+
+# Generate coverage report in terminal
+coverage report
+
+# Generate detailed HTML report
+coverage html
+
+cd /htmlcov
+
+python -m http.server 8000
+
+Then just open http://localhost:8000 
+```
+
+10. **Start development server**
 ```bash
 python manage.py runserver
 ```
+The APIs will be available at `http://localhost:8000/api/docs`
 
-The API will be available at `http://localhost:8000`
 
 ### Option 2: Docker Setup
 
@@ -143,24 +161,7 @@ The API will be available at `http://localhost:8000`
    - Buyers: Deposit coins, buy products, reset deposit
    - Everyone: View all products
 
-## Testing
 
-Run all tests:
-```bash
-python manage.py test
-```
-
-Run specific test class:
-```bash
-python manage.py test api.tests.ProductTests
-```
-
-Run with coverage:
-```bash
-pip install coverage
-coverage run --source='.' manage.py test
-coverage report
-```
 
 ## Database Schema
 
@@ -189,7 +190,7 @@ coverage report
 ## Edge Cases Handled
 
 - ✅ Cost validation (must be multiples of 5)
-- ✅ Deposit limit (max 10,000 cents)
+- ✅ Deposit limit (max 100 cents)
 - ✅ Stock validation (insufficient stock)
 - ✅ Balance validation (insufficient funds)
 - ✅ Seller ownership (can only modify own products)
@@ -223,11 +224,3 @@ Create superuser:
 ```bash
 python manage.py createsuperuser
 ```
-
-## License
-
-MIT License
-
-## Support
-
-For issues and questions, please open an issue in the repository.
