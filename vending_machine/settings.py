@@ -164,10 +164,7 @@ SPECTACULAR_SETTINGS = {
 
 import os
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-]
+ALLOWED_HOSTS = ['*']
 
 # Add ngrok host from environment variable if it exists
 NGROK_HOST = os.environ.get('NGROK_HOST')
